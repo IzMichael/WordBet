@@ -124,7 +124,7 @@
     });
 </script>
 
-<div class="flex flex-col items-center justify-start w-full h-screen max-h-screen px-5 py-10 mx-auto overflow-hidden lg:w-1/5 lg:px-0">
+<div class="flex flex-col items-center justify-start w-full h-screen max-h-screen px-5 py-5 mx-auto overflow-hidden lg:w-1/5 lg:px-0">
     <h1 class="text-6xl font-bold font-work">WordBet</h1>
     <p>Created by IzMichael - Inspired by Wordle</p>
 
