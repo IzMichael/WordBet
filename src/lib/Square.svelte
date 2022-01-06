@@ -30,7 +30,7 @@
     }
 </script>
 
-<h3 bind:this={box} class="flex flex-col items-center justify-center w-16 h-16 p-2 text-3xl border border-gray-400" style="text-transform:uppercase">{value || ''}</h3>
+<h3 bind:this={box} class="flex flex-col items-center justify-center lg:w-16 lg:h-16 w-10 h-10 p-2 text-xl lg:text-3xl border border-gray-400" style="text-transform:uppercase">{value || ''}</h3>
 
 <style>
     
