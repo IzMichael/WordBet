@@ -1,3 +1,7 @@
+<svelte:head>
+    <title>WordBet - By IzMichael</title>
+</svelte:head>
+
 <script>
     import Row from './lib/Row.svelte';
     import { onMount } from 'svelte';
@@ -122,6 +126,7 @@
 
 <div class="flex flex-col items-center justify-start w-full h-screen max-h-screen px-5 py-10 mx-auto overflow-hidden lg:w-1/5 lg:px-0">
     <h1 class="text-6xl font-bold font-work">WordBet</h1>
+    <p>Created by IzMichael - Inspired by Wordle</p>
 
     <div class="flex flex-row items-center justify-start w-full p-1 mb-2 border border-gray-500">
         <div class="flex flex-row items-center justify-between flex-1">
