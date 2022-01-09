@@ -4,7 +4,7 @@
     export let word = '', value = '', input = 'false', keys;
 </script>
 
-<div class="flex flex-row items-center justify-between w-full lg:h-16 h-10 gap-2">
+<div class="flex flex-row items-center justify-evenly w-full lg:h-16 h-10 gap-2">
     <Square bind:value={value[0]} word="{word}" role="0" input={input} bind:keys></Square>
     <Square bind:value={value[1]} word="{word}" role="1" input={input} bind:keys></Square>
     <Square bind:value={value[2]} word="{word}" role="2" input={input} bind:keys></Square>
