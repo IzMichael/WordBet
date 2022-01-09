@@ -155,7 +155,7 @@
             <Row bind:word={gamedata.word} value="     " bind:keys={gamedata.used} input="true"></Row>
         {/each}
 
-        <hr class="absolute top-0 w-full transition-all duration-200 ease-linear border-red-500" style="border-top-width: 0.125rem; margin-top: {3 * gamedata.bet + 2.70}rem;">
+        <hr class="absolute top-0 w-full transition-all duration-200 ease-linear border-red-500" style="border-top-width: 0.125rem; margin-top: {3 * gamedata.bet + 2.95}rem;">
     </div>
 
     <div class="w-full">
