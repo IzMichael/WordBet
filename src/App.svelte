@@ -50,9 +50,10 @@
         },
         word: '     ',
         bet: 6,
-        score: 0
+        score: parseInt(window.localStorage.getItem('gamescore')) || 0
     };
     $: window.localStorage.setItem('gamedata', JSON.stringify(gamedata));
+    $: window.localStorage.setItem('gamescore', parseInt(gamedata.score));
     $: {
         if (betinp > 7) {
             betinp = 7;
@@ -150,8 +151,7 @@
 
 <div class="flex flex-col items-center justify-start w-full h-full max-h-screen px-5 py-5 mx-auto overflow-hidden lg:w-1/5 lg:px-0">
     <h1 class="text-3xl font-bold font-work">WordBet</h1>
-    <p class="text-sm">Created by IzMichael</p>
-    <p class="text-sm">Inspired by Wordle</p>
+    <p class="text-sm">Created by IzMichael - Inspired by Wordle</p>
 
     <div class="flex flex-row items-center justify-start w-full p-1 mb-2 border border-gray-500">
         <div class="flex flex-row items-center justify-between flex-1">
