@@ -55,14 +55,12 @@
     };
     $: window.localStorage.setItem('gamedata', JSON.stringify(gamedata));
     $: window.localStorage.setItem('gamescore', parseInt(gamedata.score));
-    $: {
-        if (betinp > 7) {
-            betinp = 7;
-        }
+    $: if (gamedata.bet > 7) {
+        gamedata.bet = 7;
     }
 
     async function submit() {
-        betinp.disabled = 'true';
+        betinp.disabled = true;
 
         if (all.includes(input.toLowerCase())) {
             gamedata.tries = [...gamedata.tries, input]
@@ -106,7 +104,7 @@
 
                 gamedata.word = simple[Math.floor(Math.random() * ((simple.length-1) - 0 + 1) + 0)].toUpperCase();
                 allowinput = true;
-                betinp.disabled = 'false';
+                betinp.disabled = false;
                 gamedata.tries = [], gamedata.used = { green: [], yellow: [], grey: [] };
                 [...document.querySelectorAll('.key')]
                 .forEach(a => a.classList.remove('green', 'yellow', 'grey'));
@@ -216,7 +214,7 @@
     </div>
 
     <div class="w-full mt-10">
-        <div class="flex flex-col w-auto keyboard-base">
+        <div class="flex flex-col w-auto lg:left-0 keyboard-base lg:absolute lg:bottom-0 lg:w-full">
             <div class="flex flex-row justify-between flex-1 max-w-full">
                 <div class="key">Q</div>
                 <div class="key">W</div>
