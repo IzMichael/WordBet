@@ -100,14 +100,7 @@
 
                 gamedata.score += 5;
 
-                await sleep (2.5);
-
-                gamedata.word = simple[Math.floor(Math.random() * ((simple.length-1) - 0 + 1) + 0)].toUpperCase();
-                allowinput = true;
-                betinp.disabled = false;
-                gamedata.tries = [], gamedata.used = { green: [], yellow: [], grey: [] };
-                [...document.querySelectorAll('.key')]
-                .forEach(a => a.classList.remove('green', 'yellow', 'grey'));
+                open();
             }
             
             input = '';
@@ -126,6 +119,8 @@
                     duration: 2500
                 });
                 gamedata.score = 0;
+
+                open();
             }
         } else {            
             toast.push(`<p class="font-bold">Not a word!</p><p>${input} is not a word.</p>`, {
@@ -145,6 +140,17 @@
             await sleep(0.5)
             document.querySelector('.inputbg').style.borderColor = 'transparent';
         }
+    };    
+
+    function next() {
+        gamedata.word = simple[Math.floor(Math.random() * ((simple.length-1) - 0 + 1) + 0)].toUpperCase();
+        allowinput = true;
+        betinp.disabled = false;
+        gamedata.tries = [], gamedata.used = { green: [], yellow: [], grey: [] };
+        [...document.querySelectorAll('.key')]
+        .forEach(a => a.classList.remove('green', 'yellow', 'grey'));
+
+        isOpen = false;
     };
 
     // Keyboard
@@ -172,10 +178,27 @@
             console.log('GREEN', letter)
             keys.filter(a => a.textContent == letter)[0].classList.add('green')
         });
-    }
+    };
+
+    // Continue Dialog    
+    import { DialogOverlay, DialogContent } from 'svelte-accessible-dialog';
+
+    let isOpen;
+
+    function open() {
+        isOpen = true;
+    };
 </script>
 
-<div class="flex flex-col items-center justify-start w-full h-full max-h-screen px-5 py-5 mx-auto overflow-hidden lg:w-1/5 lg:px-0">
+<DialogOverlay {isOpen}>
+    <DialogContent>
+        <div class="flex flex-col items-center justify-center w-full h-full">
+            <button on:click={next} class="p-2 px-10 bg-green-400 outline-none">Next Word</button>
+        </div>
+    </DialogContent>
+</DialogOverlay>
+
+<div class="flex flex-col items-center justify-start w-full h-full max-h-screen px-5 py-5 mx-auto lg:w-1/5 lg:px-0">
     <div class="relative w-full">
         <SvelteToast/>
     </div>
