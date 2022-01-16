@@ -125,7 +125,7 @@
                 });
 
                 gamedata.score += 5;
-                [...persistent.all].filter(w => w.word == gamedata.word)[0].played = true;
+                persistent.all[persistent.all.findIndex(w => w.word == gamedata.word)].played = true;
 
                 open();
             }
