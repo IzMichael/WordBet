@@ -16,9 +16,31 @@
 
         all = await fetch('/assets/words.json').then(res => {return res.json()});
         simple = await fetch('/assets/simple.json').then(res => {return res.json()});
-        gamedata.word = simple[Math.floor(Math.random() * ((simple.length-1) - 0 + 1) + 0)].toUpperCase();
+        
+        if (typeof window.localStorage.getItem('persistent') == Object) {
+            persistent = JSON.parse(window.localStorage.getItem('persistent'));
+        } else {
+            persistent = {
+                all: []
+            };
+            for (let i = 0; i < simple.length; i++) {
+                const word = simple[i];
+                persistent.all.push({
+                    id: i+1,
+                    word: word.toUpperCase(),
+                    played: false
+                })
+            }
+        };
+
+        selectWord();
         allowinput = true;
     });
+
+    function selectWord() {        
+        gamedata.word = simple[Math.floor(Math.random() * ((simple.length-1) - 0 + 1) + 0)].toUpperCase();
+        gamedata.wordid = [...persistent.all].filter(w => w.word == gamedata.word)[0].id;
+    }
     
     function sleep(s) {
         return new Promise(resolve => setTimeout(resolve, (s * 1000)));
@@ -50,6 +72,7 @@
             grey: []
         },
         word: '     ',
+        wordid: 0,
         bet: 6,
         score: parseInt(window.localStorage.getItem('gamescore')) || 0
     };
@@ -58,6 +81,9 @@
     $: if (gamedata.bet > 7) {
         gamedata.bet = 7;
     }
+
+    let persistent;
+    $: window.localStorage.setItem('persistent', JSON.stringify(persistent))
 
     async function submit() {
         betinp.disabled = true;
@@ -99,6 +125,7 @@
                 });
 
                 gamedata.score += 5;
+                [...persistent.all].filter(w => w.word == gamedata.word)[0].played = true;
 
                 open();
             }
@@ -143,7 +170,8 @@
     };    
 
     function next() {
-        gamedata.word = simple[Math.floor(Math.random() * ((simple.length-1) - 0 + 1) + 0)].toUpperCase();
+        selectWord();
+        
         allowinput = true;
         betinp.disabled = false;
         gamedata.tries = [], gamedata.used = { green: [], yellow: [], grey: [] };
@@ -203,7 +231,7 @@
         <SvelteToast/>
     </div>
     
-    <h1 class="text-3xl font-bold font-work">WordBet</h1>
+    <h1 class="text-3xl font-bold font-work">WordBet #{gamedata.wordid}</h1>
     <p class="w-full text-sm italic text-center">Created by IzMichael - Inspired by Wordle</p>
 
     <div class="flex flex-row items-center justify-start w-full p-1 mb-2 border border-gray-500">
