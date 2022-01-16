@@ -3,6 +3,7 @@
 </svelte:head>
 
 <script>
+    import { SvelteToast, toast } from '@zerodevx/svelte-toast'
     import Row from './lib/Row.svelte';
     import { onMount } from 'svelte';
 
@@ -90,9 +91,18 @@
 
             if (input == gamedata.word) {
                 allowinput = false;
-                alert('you won!')
+                toast.push('<p class="font-bold">You Won!</p><p>+5 Points</p>', {
+                    theme: {
+                        '--toastBackground': 'lime',
+                        '--toastColor': 'black',
+                        '--toastBarBackground': 'green'
+                    },
+                    duration: 2500
+                });
 
                 gamedata.score += 5;
+
+                await sleep (2.5);
 
                 gamedata.word = simple[Math.floor(Math.random() * ((simple.length-1) - 0 + 1) + 0)].toUpperCase();
                 allowinput = true;
@@ -108,9 +118,27 @@
 
             if (gamedata.tries.length >= gamedata.bet) {
                 allowinput = false;
-                input = gamedata.word;
+                input = gamedata.word;           
+                toast.push(`<p class="font-bold">You have run out of tries.</p><p>The correct word was: ${gamedata.word}.</p><p>Your score has been reset to 0.</p>`, {
+                    theme: {
+                        '--toastBackground': 'red',
+                        '--toastColor': 'white',
+                        '--toastBarBackground': 'darkred'
+                    },
+                    duration: 2500
+                });
+                gamedata.score = 0;
             }
-        } else {
+        } else {            
+            toast.push(`<p class="font-bold">Not a word!</p><p>${input} is not a word.</p>`, {
+                theme: {
+                    '--toastBackground': 'red',
+                    '--toastColor': 'white',
+                    '--toastBarBackground': 'darkred'
+                },
+                duration: 2500
+            });
+
             document.querySelector('.inputbg').style.borderColor = '#ee0000';
             await sleep(0.5)
             document.querySelector('.inputbg').style.borderColor = 'transparent';
@@ -150,13 +178,17 @@
 </script>
 
 <div class="flex flex-col items-center justify-start w-full h-full max-h-screen px-5 py-5 mx-auto overflow-hidden lg:w-1/5 lg:px-0">
+    <div class="relative w-full">
+        <SvelteToast/>
+    </div>
+    
     <h1 class="text-3xl font-bold font-work">WordBet</h1>
-    <p class="text-sm">Created by IzMichael - Inspired by Wordle</p>
+    <p class="w-full text-sm italic text-center">Created by IzMichael - Inspired by Wordle</p>
 
     <div class="flex flex-row items-center justify-start w-full p-1 mb-2 border border-gray-500">
         <div class="flex flex-row items-center justify-between flex-1">
             <p class="font-semibold whitespace-nowrap">Your Bet: </p>
-            <input type="number" bind:value={gamedata.bet} bind:this={betinp} max=7 min=1 class="flex-1 pl-2">
+            <input type="number" bind:value={gamedata.bet} bind:this={betinp} max=7 min=1 class="flex-1 pl-2 border-b border-black">
         </div>
 
         <div class="flex flex-row items-center justify-between flex-1">
@@ -184,8 +216,8 @@
     </div>
 
     <div class="w-full mt-10">
-        <div class="keyboard-base w-auto flex flex-col">
-            <div class="flex flex-row justify-between max-w-full flex-1">
+        <div class="flex flex-col w-auto keyboard-base">
+            <div class="flex flex-row justify-between flex-1 max-w-full">
                 <div class="key">Q</div>
                 <div class="key">W</div>
                 <div class="key">E</div>
@@ -197,7 +229,7 @@
                 <div class="key">O</div>
                 <div class="key">P</div>
             </div>
-            <div class="flex flex-row justify-between max-w-full flex-1">
+            <div class="flex flex-row justify-between flex-1 max-w-full">
                 <div class="key u"></div>
                 <div class="key">A</div>
                 <div class="key">S</div>
@@ -210,7 +242,7 @@
                 <div class="key">L</div>
                 <div class="key u green"></div>
             </div>
-            <div class="flex flex-row justify-between max-w-full flex-1">
+            <div class="flex flex-row justify-between flex-1 max-w-full">
                 <div class="key">←</div>
                 <div class="key u yellow"></div>
                 <div class="key">Z</div>
@@ -267,5 +299,10 @@
     .u {
         flex: 1 1 0%;
         visibility: hidden;
+    }
+
+    /* Toasts */
+    ._toastBar {
+        display: none;
     }
 </style>
