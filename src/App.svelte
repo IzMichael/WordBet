@@ -16,7 +16,7 @@
         all = await fetch('/assets/words.json').then(res => {return res.json()});
         simple = await fetch('/assets/simple.json').then(res => {return res.json()});
         
-        if (!window.localStorage.getItem('played') == true) {
+        if (!window.localStorage.getItem('played') == true || persistent.all[0].word == 'ABOUT') {
             persistent = {
                 all: []
             };
