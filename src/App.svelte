@@ -236,15 +236,12 @@
         let keys = [...document.querySelectorAll('.key')].filter(a => a.textContent);
         
         await gamedata.used.grey.forEach(letter => {
-            console.log('GREY', letter)
             keys.filter(a => a.textContent == letter)[0].classList.add('grey')
         });
         await gamedata.used.yellow.forEach(letter => {
-            console.log('YELLOW', letter)
             keys.filter(a => a.textContent == letter)[0].classList.add('yellow')
         });
         await gamedata.used.green.forEach(letter => {
-            console.log('GREEN', letter)
             keys.filter(a => a.textContent == letter)[0].classList.add('green')
         });
     };
