@@ -148,8 +148,7 @@
             updateKeyboard();
 
             if (gamedata.tries.length >= gamedata.bet) {
-                allowinput = false;
-                input = gamedata.word;           
+                allowinput = false;       
                 toast.push(`<p class="font-bold">You have run out of tries.</p><p>The correct word was: ${gamedata.word}.</p>`, {
                     theme: {
                         '--toastBackground': 'red',
@@ -257,6 +256,22 @@
     function open() {
         isOpen = true;
     };
+
+    // Word List
+    let wordlist;
+    function searchwordlist(inp, slot) {
+        let tr = wordlist.querySelectorAll('tr');
+        for (let i = 0; i < tr.length; i++) {
+            let td = tr[i].querySelectorAll('td')[slot];
+            if (td) {
+                if (td.innerHTML.toUpperCase().indexOf(inp.toUpperCase()) > -1) {
+                    tr[i].style.display = '';
+                } else {
+                    tr[i].style.display = 'none'
+                }
+            }
+        }
+    }
 </script>
 
 <DialogOverlay {isOpen}>
@@ -351,7 +366,11 @@
     <h1 class="text-3xl font-bold font-work ahov" on:click={() => {page = 'game'}}>All Words</h1>
     <p class="w-full text-sm italic text-center">{persistent.all.filter(w => w.played == true).length} Played / {persistent.all.length - persistent.all.filter(w => w.played == true).length} Remaining</p>
     
-    <table class="w-full mt-2">
+    <div class="flex flex-row items-center justify-start w-full mb-2 border border-gray-500">
+        <input on:keyup={(e) => searchwordlist(e.target.value, 0)} class="w-1/2 p-1 outline-none" placeholder="Search for an ID...">
+        <input on:keyup={(e) => searchwordlist(e.target.value, 1)} class="w-1/2 p-1 outline-none" placeholder="Search for a word...">
+    </div>
+    <table class="w-full mt-2" bind:this={wordlist}>
         {#each persistent.all as w}                
             <tr on:click={async () => {
                 if (w.played == true || w.played == 'failed') {
