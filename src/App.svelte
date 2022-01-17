@@ -47,7 +47,7 @@
         };
         gamedata.wordid = [...persistent.all].filter(w => w.word == gamedata.word)[0].id;
 
-        if (persistent.all[persistent.all.findIndex(w => w.word == gamedata.word)].played == true) {
+        if (persistent.all[persistent.all.findIndex(w => w.word == gamedata.word)].played == true || persistent.all[persistent.all.findIndex(w => w.word == gamedata.word)].played == 'failed') {
             selectWord();
         };
     }
@@ -364,7 +364,7 @@
                 }
             }} class="ahov {w.played == true ? 'bg-green-200' : ''} {w.played == 'failed' ? 'bg-red-200' : ''}">
                 <td class="p-2 text-left">#{w.id}</td>
-                {#if w.played == true}
+                {#if w.played == true || w.played == 'failed'}
                     <td class="w-full p-2 text-right">{w.word}</td>
                 {:else}
                     <td class="w-full p-2 text-right">_ _ _ _ _</td>
