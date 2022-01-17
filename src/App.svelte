@@ -366,11 +366,11 @@
     <h1 class="text-3xl font-bold font-work ahov" on:click={() => {page = 'game'}}>All Words</h1>
     <p class="w-full text-sm italic text-center">{persistent.all.filter(w => w.played == true).length} Played / {persistent.all.length - persistent.all.filter(w => w.played == true).length} Remaining</p>
     
-    <div class="flex flex-row items-center justify-start w-full mb-2 border border-gray-500">
-        <input on:keyup={(e) => searchwordlist(e.target.value, 0)} class="w-1/2 p-1 outline-none" placeholder="Search for an ID...">
-        <input on:keyup={(e) => searchwordlist(e.target.value, 1)} class="w-1/2 p-1 outline-none" placeholder="Search for a word...">
+    <div class="flex flex-row items-center justify-start w-full my-2 border border-gray-500">
+        <input on:keyup={(e) => searchwordlist(e.target.value, 0)} class="w-1/4 p-1 border-r border-gray-500 outline-none" placeholder="ID">
+        <input on:keyup={(e) => searchwordlist(e.target.value, 1)} class="w-3/4 p-1 outline-none" placeholder="Search for a word...">
     </div>
-    <table class="w-full mt-2" bind:this={wordlist}>
+    <table class="w-full" bind:this={wordlist}>
         {#each persistent.all as w}                
             <tr on:click={async () => {
                 if (w.played == true || w.played == 'failed') {
