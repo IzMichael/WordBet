@@ -150,7 +150,7 @@
             if (gamedata.tries.length >= gamedata.bet) {
                 allowinput = false;
                 input = gamedata.word;           
-                toast.push(`<p class="font-bold">You have run out of tries.</p><p>The correct word was: ${gamedata.word}.</p><p>Your score has been reset to 0.</p>`, {
+                toast.push(`<p class="font-bold">You have run out of tries.</p><p>The correct word was: ${gamedata.word}.</p>`, {
                     theme: {
                         '--toastBackground': 'red',
                         '--toastColor': 'white',
@@ -158,7 +158,10 @@
                     },
                     duration: 2500
                 });
-                gamedata.score = 0;
+
+                persistent.all[persistent.all.findIndex(w => w.word == gamedata.word)].bet = gamedata.bet;
+                persistent.all[persistent.all.findIndex(w => w.word == gamedata.word)].played = 'failed';
+                persistent.all[persistent.all.findIndex(w => w.word == gamedata.word)].emojis = await toEmoji(gamedata.tries, gamedata.word);
 
                 open();
             }
@@ -351,7 +354,7 @@
     <table class="w-full mt-2">
         {#each persistent.all as w}                
             <tr on:click={async () => {
-                if (w.played == true) {
+                if (w.played == true || w.played == 'failed') {
                     navigator.clipboard.writeText(`WordBet - Word #${w.id} - ${w.emojis.length}/${w.bet}\n\n` + w.emojis.join('\n'));
                     toast.push('Copied grid to clipboard.')
                 } else {
@@ -359,7 +362,7 @@
                     selectWord(w.id);
                     page = 'game';
                 }
-            }} class="ahov {w.played == true ? 'bg-green-200' : ''}">
+            }} class="ahov {w.played == true ? 'bg-green-200' : ''} {w.played == 'failed' ? 'bg-red-200' : ''}">
                 <td class="p-2 text-left">#{w.id}</td>
                 {#if w.played == true}
                     <td class="w-full p-2 text-right">{w.word}</td>
