@@ -126,7 +126,7 @@
 
             if (input == gamedata.word) {
                 allowinput = false;
-                toast.push('<p class="font-bold">You Won!</p><p>+5 Points</p>', {
+                toast.push(`<p class="font-bold">You Won!</p><p>+${(8 - gamedata.bet) * 5} Points</p>`, {
                     theme: {
                         '--toastBackground': 'lime',
                         '--toastColor': 'black',
@@ -135,7 +135,7 @@
                     duration: 2500
                 });
 
-                gamedata.score += 5;
+                gamedata.score += (8 - gamedata.bet) * 5;
                 persistent.all[persistent.all.findIndex(w => w.word == gamedata.word)].bet = gamedata.bet;
                 persistent.all[persistent.all.findIndex(w => w.word == gamedata.word)].played = true;
                 persistent.all[persistent.all.findIndex(w => w.word == gamedata.word)].emojis = await toEmoji(gamedata.tries, gamedata.word);
@@ -266,7 +266,7 @@
 
 <SvelteToast/>
 
-<div class="flex flex-col items-center justify-start w-full h-full max-h-screen px-5 py-5 mx-auto lg:w-1/5 lg:px-0 {page == 'game' ? '' : 'hidden'}">    
+<div class="flex flex-col items-center justify-start w-full h-full max-h-screen px-5 py-5 mx-auto lg:w-1/4 lg:px-0 {page == 'game' ? '' : 'hidden'}">    
     <h1 class="text-3xl font-bold font-work ahov" on:click={() => {page = 'list'}}>WordBet #{gamedata.wordid}</h1>
     <p class="w-full text-sm italic text-center">Created by IzMichael - Inspired by Wordle</p>
 
@@ -344,7 +344,7 @@
     </div>
 </div>
 
-<div class="flex flex-col items-center justify-start w-full h-full max-h-screen px-5 py-5 mx-auto lg:w-1/5 lg:px-0 {page == 'list' ? '' : 'hidden'}">
+<div class="flex flex-col items-center justify-start w-full h-full max-h-screen px-5 py-5 mx-auto lg:w-1/4 lg:px-0 {page == 'list' ? '' : 'hidden'}">
     <h1 class="text-3xl font-bold font-work ahov" on:click={() => {page = 'game'}}>All Words</h1>
     <p class="w-full text-sm italic text-center">{persistent.all.filter(w => w.played == true).length} Played / {persistent.all.length - persistent.all.filter(w => w.played == true).length} Remaining</p>
     
@@ -385,9 +385,9 @@
 
     .key {
         flex: 1 1 0%;
-        font-size: 20px;
+        font-size: 15px;
         text-align: center;
-        padding: 0.55rem 0.5rem;
+        padding: 0.55rem 0.3rem;
         cursor: pointer;
         user-select: none;
     }
