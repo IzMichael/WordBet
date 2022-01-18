@@ -5,12 +5,13 @@
 <script>
     import { SvelteToast, toast } from '@zerodevx/svelte-toast'
     import Row from './lib/Row.svelte';
+    import Square from './lib/Square.svelte';
     import { onMount } from 'svelte';
 
     let input = '     ',
     all, simple,
     allowinput, betinp,
-    page = 'game';
+    page = window.localStorage.getItem('played') == 'true' ? 'game' : 'intro';
 
     onMount(async () => {
         all = await fetch('/assets/words.json').then(res => {return res.json()});
@@ -296,6 +297,44 @@
 
 <SvelteToast/>
 
+<div class="flex flex-col items-center justify-start w-full h-full max-h-screen px-5 py-5 mx-auto lg:w-1/4 lg:px-0 {page == 'intro' ? '' : 'hidden'}">
+    <h1 class="text-2xl font-bold text-center font-work">Welcome to WordBet!</h1>
+    <p class="w-full mt-3 text-left text-md">The game is simple.<br>Your job is to find the hidden 5 letter word.</p>
+    <p class="w-full my-2 text-left text-md">You can make guesses, but each guess must be a dictionary-listed 5 letter word.</p>
+    <p class="w-full mb-3 text-left text-md">After a guess, the tiles' colour will reflect the position of that letter within the word.</p>
+    
+    <p class="w-full mt-2 font-bold text-center text-md">For example:</p>
+
+    <p class="w-full my-1 text-sm text-left">A green tile means the letter is in the correct spot in the solution.</p>
+    <div class="flex flex-row items-center w-full h-10 gap-2 justify-evenly">
+        <Square value="W" word="WORDS" role="0" input="false"></Square>
+        <Square value="A" word="WORDS" role="1" input="true"></Square>
+        <Square value="L" word="WORDS" role="2" input="true"></Square>
+        <Square value="T" word="WORDS" role="3" input="true"></Square>
+        <Square value="Z" word="WORDS" role="4" input="true"></Square>
+    </div>
+
+    <p class="w-full my-1 text-sm text-left">A yellow tile means the letter is in the solution, but not this spot.</p>
+    <div class="flex flex-row items-center w-full h-10 gap-2 justify-evenly">
+        <Square value="F" word="WORDS" role="0" input="true"></Square>
+        <Square value="R" word="WORDS" role="1" input="true"></Square>
+        <Square value="O" word="WORDS" role="2" input="false"></Square>
+        <Square value="Z" word="WORDS" role="3" input="true"></Square>
+        <Square value="E" word="WORDS" role="4" input="true"></Square>
+    </div>
+    
+    <p class="w-full my-1 text-sm text-left">A grey tile means the letter isn't in the solution at all.</p>
+    <div class="flex flex-row items-center w-full h-10 gap-2 justify-evenly">
+        <Square value="B" word="WORDS" role="0" input="true"></Square>
+        <Square value="E" word="WORDS" role="1" input="true"></Square>
+        <Square value="A" word="WORDS" role="2" input="true"></Square>
+        <Square value="U" word="WORDS" role="3" input="true"></Square>
+        <Square value="T" word="WORDS" role="4" input="false"></Square>
+    </div>
+
+    <button class="w-full p-2 px-5 mt-10 font-bold text-white bg-green-500 hover:bg-green-400 active:bg-green-500" on:click={() => page = 'game'}>Let's Play!</button>
+</div>
+
 <div class="flex flex-col items-center justify-start w-full h-full max-h-screen px-5 py-5 mx-auto lg:w-1/4 lg:px-0 {page == 'game' ? '' : 'hidden'}">    
     <h1 class="text-3xl font-bold font-work ahov" on:click={() => {page = 'list'}}>WordBet #{gamedata.wordid}</h1>
     <p class="w-full text-sm italic text-center">Created by IzMichael - Inspired by Wordle</p>
@@ -322,11 +361,11 @@
         <hr class="w-full -my-1 transition-all duration-200 ease-linear border-gray-500" style="border-top-width: 0.125rem;">
 
         {#each gamedata.tries as attempt, i}
-            <Row bind:word={gamedata.word} bind:value={attempt} bind:keys={gamedata.used} input="false"></Row>
+            <Row bind:word={gamedata.word} bind:value={attempt} input="false"></Row>
         {/each}
 
         {#each {length: (gamedata.bet - gamedata.tries.length)} as _, i}
-            <Row bind:word={gamedata.word} value="     " bind:keys={gamedata.used} input="true"></Row>
+            <Row bind:word={gamedata.word} value="     " input="true"></Row>
         {/each}
 
         <hr class="absolute top-0 w-full transition-all duration-200 ease-linear border-red-500" style="border-top-width: 0.125rem; margin-top: {3 * gamedata.bet + 3}rem;">
