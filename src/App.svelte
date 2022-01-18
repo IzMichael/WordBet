@@ -16,9 +16,10 @@
         all = await fetch('/assets/words.json').then(res => {return res.json()});
         simple = await fetch('/assets/simple.json').then(res => {return res.json()});
         
-        if (!window.localStorage.getItem('played') == true || persistent.all[0].word == 'ABOUT') {
+        if (window.localStorage.getItem('played') !== 'true' || persistent.all[0].word == 'ABOUT') {
             persistent = {
-                all: []
+                all: [],
+                settings: {}
             };
             for (let i = 0; i < simple.length; i++) {
                 const word = simple[i];
@@ -29,22 +30,33 @@
                     played: false,
                     emojis: []
                 })
-            }
+            };
+            persistent.settings = {
+                order: 'random'
+            };
+            window.localStorage.setItem('gamescore', 0);
             window.localStorage.setItem('played', 'true');
+        } else {
+            if (!persistent.settings) {
+                persistent.settings = {
+                    order: 'random'
+                };
+            }
         };
-
         selectWord();
         allowinput = true;
         
         input = '';
     });
 
-    function selectWord(num) { 
+    async function selectWord(num) { 
         if (num) {
             gamedata.word = simple[parseInt(num)-1].toUpperCase();
-        } else {
+        } else if (persistent.settings.order == 'sequence') {
+            gamedata.word = simple[gamedata.wordid].toUpperCase();
+        } else {                
             gamedata.word = simple[Math.floor(Math.random() * ((simple.length-1) - 0 + 1) + 0)].toUpperCase();
-        };
+        }
         gamedata.wordid = [...persistent.all].filter(w => w.word == gamedata.word)[0].id;
 
         if (persistent.all[persistent.all.findIndex(w => w.word == gamedata.word)].played == true || persistent.all[persistent.all.findIndex(w => w.word == gamedata.word)].played == 'failed') {
@@ -298,6 +310,8 @@
             <p class="flex-1 pr-2 font-semibold text-right whitespace-nowrap">Your Score: </p>
             <p>{gamedata.score}</p>
         </div>
+
+        <img src="/assets/img/gear.svg" class="w-8 h-8 ml-2 cursor-pointer select-none" on:click={() => page = 'settings'} alt="Settings">
     </div>
 
     <div class="relative flex flex-col items-center justify-start flex-1 w-full gap-2">
@@ -393,6 +407,29 @@
     </table>
 </div>
 
+<div class="flex flex-col items-center justify-start w-full h-full max-h-screen px-5 py-5 mx-auto lg:w-1/4 lg:px-0 {page == 'settings' ? '' : 'hidden'}">
+    <h1 class="text-3xl font-bold font-work ahov" on:click={() => {page = 'game'}}>Settings</h1>
+    
+    <a href="https://izmichael.xyz" class="mx-auto mt-1 text-sm italic text-center ahov">WordBet was built and designed by IzMichael.</a>
+    <a href="https://www.powerlanguage.co.uk/wordle/" class="mx-auto mt-1 text-sm italic text-center ahov">Origin and early inspiration by Josh Wardle.</a>  
+
+    <h3 class="mt-5 text-lg font-bold">Word Order</h3>
+    <div class="flex flex-row items-center justify-between w-full">
+        <p class="flex-1 mr-3 text-sm text-right">Random:<br>284, 153, 85...</p>
+        <label class="switch">
+            <input type="checkbox" on:change={(e) => {persistent.settings.order = (e.target.checked ? 'sequence' : 'random')}}>
+            <span class="slider"></span>
+        </label>
+        <p class="flex-1 ml-3 text-sm">Sequential:<br>1, 2, 3...</p>
+    </div>
+
+    <p class="mt-5">{persistent.all.filter(w => w.played == true).length} Played / {persistent.all.length - persistent.all.filter(w => w.played == true).length} Remaining</p>
+    <button class="w-full p-2 px-5 my-1 font-bold text-white bg-red-500 hover:bg-red-400 active:bg-red-500" on:click={() => {window.localStorage.setItem('played', 'false'); window.localStorage.setItem('gamescore', 0); window.location = window.location;}}>Reset Data</button>
+    <p class="text-sm italic font-bold text-center text-red-600">WARNING: This action will reset your score, completed words, and all progress.<br>THIS ACTION IS IRREVERSIBLE.</p>
+
+    <a href="https://izmichael.xyz/" class="w-full mt-32 text-sm text-center">Built by IzMichael - &copy; IzMichael 2022</a>
+</div>
+
 <style global>
     @tailwind base;
     @tailwind components;
@@ -462,5 +499,49 @@
 
     .ahov:hover:after {
         transform: scaleX(1);
+    }
+
+    /* Settings Slider */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #2196F3;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
     }
 </style>
